@@ -55,7 +55,7 @@ module ReversiMethods
       turn_succeed = true if turn(copied_board, next_pos, stone_color, direction)
     end
 
-    copy_board(board, copied_board) if !dry_run && turn_succeed
+    copy_board(board, copied_board) if !dry_run && turn_succeed ##ここになんかある
 
     turn_succeed
   end
@@ -63,6 +63,7 @@ module ReversiMethods
   def turn(board, target_pos, attack_stone_color, direction)
     return false if target_pos.out_of_board?
     return false if target_pos.stone_color(board) == attack_stone_color
+    return false if target_pos.stone_color(board) == BLANK_CELL
 
     next_pos = target_pos.next_position(direction)
     if (next_pos.stone_color(board) == attack_stone_color) || turn(board, next_pos, attack_stone_color, direction)
@@ -83,7 +84,9 @@ module ReversiMethods
         next unless cell == BLANK_CELL
 
         position = Position.new(row, col)
-        return true if put_stone(board, position.to_cell_ref, attack_stone_color, dry_run: true)
+        if put_stone(board, position.to_cell_ref, attack_stone_color, dry_run: true)
+          return true
+        end
       end
     end
     false
